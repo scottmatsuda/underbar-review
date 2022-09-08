@@ -50,7 +50,8 @@
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
   _.each = function(collection, iterator) {
-    if (Array.isArray(collection)) {
+    var isArray = Array.isArray(collection);
+    if (isArray) {
       for (let i = 0; i < collection.length; i++) {
         iterator(collection[i], i, collection);
       }
@@ -80,13 +81,13 @@
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
-    var returnArr = [];
-    for (var i = 0; i < collection.length; i++) {
-      if (test(collection[i])) {
-        returnArr.push(collection[i]);
+    var filter = [];
+    _.each(collection, function(item) {
+      if (test(item)) {
+        filter.push(item);
       }
-    }
-    return returnArr;
+    });
+    return filter;
   };
 
   // Return all elements of an array that don't pass a truth test.
@@ -111,11 +112,11 @@
     for (var i = 0; i < array.length; i++) {
       if (iterator) {
         var isUnique = true;
-        for (var j = 0; j < returnArr.length; j++) {
-          if (iterator(array[i]) === iterator(returnArr[j])) {
+        returnArr.forEach(function(element, index) {
+          if (iterator(array[i]) === iterator(returnArr[index])) {
             isUnique = false;
           }
-        }
+        });
         if (isUnique) {
           returnArr.push(array[i]);
         }
@@ -371,6 +372,22 @@
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
 
+    var randomIndex = function(number) {
+      return Math.floor(Math.random() * number);
+    };
+
+    var shuffledArray = [];
+    var indexSet = new Set();
+
+    while (shuffledArray.length < array.length) {
+      var index = randomIndex(array.length);
+      if (!indexSet.has(index)) {
+        indexSet.add(index);
+        shuffledArray.push(array[index]);
+      }
+    }
+
+    return shuffledArray;
   };
 
 
